@@ -1,7 +1,7 @@
 FROM python:3.9-alpine3.13
 LABEL maintainer="kongyuydeveloper.com"   
 
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 
 # Copy the requrements to the docker
@@ -17,8 +17,10 @@ RUN python -m venv /py && \
     /py/bin/pip install -r /tmp/requirements.txt && \
     rm -rf /tmp && \
     adduser \
-        --disable-password \
-        --no-create-home \
+        # --no-password \
+        # --no-create-home \
+        -D \
+        -H \
         django-user
 
 ENV PATH="/py/bin:$PATH"
