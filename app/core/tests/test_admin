@@ -1,0 +1,31 @@
+from django.test import TestCase
+from django.contrib.auth import get_user_model
+from django.urls import reverse 
+from django.test import Client
+
+
+class AdminSiteTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        User = get_user_model()
+        self.admin_user = User.objects.create_superuser(
+            email="admin@gmail.com", 
+            password="testpass123"
+        ) 
+        self.client.force_login(self.admin_user)    # force authenication for this user
+        self.user = User.objects.create_user(
+            email="user@gmail.com",
+            password="testpass123,
+            name="Test user"
+        )
+    
+    def test_users_list(self):
+        url = reverses("admin:core_user_changelist")    # Url endpoint is defin from the docs
+        result = self.client.get(url)
+        self.assertContains(result, self.user.name)
+        self.assertContains(result, self.user.email)
+        
+    def test_edit_user_page(self):
+    url = reverse('admin:core_user_change', args=[self.user.id])
+    response = self.client.get(url)
+    self.assertEqual(response, 200)
