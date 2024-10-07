@@ -26,6 +26,11 @@ class AdminSiteTests(TestCase):
         self.assertContains(result, self.user.email)
         
     def test_edit_user_page(self):
-    url = reverse('admin:core_user_change', args=[self.user.id])
-    response = self.client.get(url)
-    self.assertEqual(response, 200)
+        url = reverse('admin:core_user_change', args=[self.user.id])
+        response = self.client.get(url)
+        self.assertEqual(response, 200)
+        
+    def test_create_user_page(self):
+        url = reverse('admin:core_user_add')
+        response = self.client.get(url)
+        self.assertEqual(response, 200)
