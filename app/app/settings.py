@@ -28,6 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "0.0.0.0:8000",
     "0.0.0.0",
+    "127.0.0.1",
     
 ]
 
@@ -43,6 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'core',
+    'rest_framework',
+    # custom apps
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -132,3 +136,13 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+
+AUTH_USER_MODEL = 'core.User'
+
+REST_FRAMEWORK = {
+    # YOUR SETTINGS
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
