@@ -40,8 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.
-    messages',
+    'django.contrib.messages',
     'django.contrib.staticfiles',
     
     'core',
@@ -49,6 +48,7 @@ INSTALLED_APPS = [
     
     # custom apps
     "drf_spectacular",
+    "rest_framework.authtoken",
 ]
 
 MIDDLEWARE = [

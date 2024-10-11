@@ -1,19 +1,22 @@
 from django.db import models
 from django.utils import timezone
 
+
+
+
 # Create your models here.
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin,
 )
-
+    
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
-        email = self.normalize_email(email) # NOrmalize our email4
         if not email:
             raise ValueError('User must have an email address')
+        email = self.normalize_email(email) # NOrmalize our email4
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -36,3 +39,4 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     objects = UserManager()    # creating user manager.
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELD = []
