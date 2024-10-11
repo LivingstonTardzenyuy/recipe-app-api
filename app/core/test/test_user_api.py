@@ -8,6 +8,7 @@ from rest_framework import status
 
 CREATE_USER_URL = reverse('core:create')
 TOKEN_URL = reverse('core:token')
+ME_URL = reverse('core:me')
 
 def create_user(**params):
     """
@@ -17,6 +18,9 @@ def create_user(**params):
 
 
 class PublicUserApiTests(TestCase):
+    """ 
+        Sets of methods with no authentication
+    """
     def setUp(self):
         self.client = APIClient()
     
@@ -68,7 +72,7 @@ class PublicUserApiTests(TestCase):
         }
         response = self.client.post(TOKEN_URL, payload)
         self.assertIn('token', response.data)
-        self.assertEual(response.status_code, HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         
     def test_create_token_with_invalid_credentials(self):
         user_details = {
@@ -84,7 +88,7 @@ class PublicUserApiTests(TestCase):
         }
         response = self.client.post(TOKEN_URL, payload)
         self.assertNotIn('token', response.data)
-        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
     def test_create_token_blank_password(self):
         user_details = {
@@ -100,4 +104,30 @@ class PublicUserApiTests(TestCase):
         }
         response = self.client.post(TOKEN_URL, payload)
         self.assertNotIn('token', response.data)
-        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        
+    def test_retrieve_user_unauthorized(self):
+        """ 
+            Test Authentication is required for user 
+        """
+        response = self.client.get(ME_URL)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        
+  
+  
+  
+Class PrivateUserAPITests(TestCase):
+    """
+        API requests that required authentication
+    """      
+    def setUp(self):
+        self.user = create_user(
+            email='user@example.com',
+            password='testpass123',
+            name='test Name'
+        )
+        
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)      # force auth 
+        
+        
