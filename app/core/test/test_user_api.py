@@ -116,7 +116,7 @@ class PublicUserApiTests(TestCase):
   
   
   
-Class PrivateUserAPITests(TestCase):
+class PrivateUserAPITests(TestCase):
     """
         API requests that required authentication
     """      
@@ -130,4 +130,36 @@ Class PrivateUserAPITests(TestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)      # force auth 
         
+    def test_retrieve_profile_success(self):
+        """ 
+            Test retrieving profiel for log in user 
+        """
+        response = self.client.get(ME_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {
+            'name': self.user.name,
+            'email': self.user.email,
+        })
+        
+    def test_post_me_not_allowed(self):
+        """ 
+            Test post is not allowed for the endpoint.
+        """
+        response = self.client.post(ME_URL, {})
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        
+    def test_update_user_profile(self):
+        """ 
+            Update user profile
+        """
+        payload = {
+            'name': 'Updated Name',
+            'email': 'updated@example.com'
+        }
+        
+        response = self.client.patch(ME_URL, payload)
+        self.user.refresh_from_db()    # detecth the change by refreshing our db
+        self.assertEqual(self.user.name, payload['name'])
+        self.assertTrue(self.user.check_password(payload['password']))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         

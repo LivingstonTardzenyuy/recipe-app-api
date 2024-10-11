@@ -14,6 +14,22 @@ class UserSerializer(serializers.ModelSerializer):
         return get_user_model().objects.create(**validated_data)
     
     
+    # def update(self, instance, validated_data):
+    #     instance.email = validated_data.get('email', instance.email)
+    #     instance.name = validated_data.get('name', instance.name)
+    #     instance.set_password(validated_data.get('password', instance.password))
+    #     instance.save()
+    #     return instance
+            
+    # updating our user serializer
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        user = super().update(instance, validated_data)
+        if password:
+            user.set_password(password)
+            user.save()
+        return user
+    
 class AuthTokenSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(min_length=5, style={
@@ -42,3 +58,5 @@ class AuthTokenSerializer(serializers.Serializer):
         
         data['user'] = user 
         return data
+    
+    
