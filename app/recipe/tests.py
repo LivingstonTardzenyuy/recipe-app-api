@@ -1,16 +1,18 @@
+from rest_framework.test import APIClient
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from recipe import models
 from decimal import Decimal
 from rest_framework.test import force_authenticate
 from rest_framework import status
 from django.urls import reverse
+from .models import Recipe
+from recipe.api.serializers import RecipeSerializer
 # Create your tests here.
 
 
 RECIPES_URL = reverse('recipe:recipe-list')
 
-class PublickRecipeAPITests(TestCase):
+class PublicRecipeAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
     
@@ -33,13 +35,13 @@ class PrivateRecipeAPITests(TestCase):
         )
         
         self.user2 = get_user_model().objects.create_user(
-            email='test@example.com',
+            email='test2@example.com',
             password='testpass123',
             name='test Name'
         )
         
         
-        force_authenticate(request, user = self.user1)
+        self.client.force_authenticate(user = self.user1)
         
     def test_get_recipes(self):
         response = self.client.get(RECIPES_URL)
@@ -49,7 +51,7 @@ class PrivateRecipeAPITests(TestCase):
     def test_recipe_list_limited_to_user(self):
         """ Test list of recipes is limited to authenticated users """
         response = self.client.get(RECIPES_URL)
-        recipes = Recipes.objects.filter(user=self.user)
+        recipes = Recipe.objects.filter(user=self.user1)
         serializer = RecipeSerializer(recipes, many=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serializer.data)
