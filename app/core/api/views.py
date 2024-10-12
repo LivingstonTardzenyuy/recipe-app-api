@@ -24,5 +24,8 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
     authentication_classes = [authentication.TokenAuthentication]   # descript the auth classes to use  for authentication  purposes 
     permission_classes = [permissions.IsAuthenticated, UpdateYourProfile]
     
-    def get_queryset(self):
+    def get_object(self):
         return self.request.user 
+    
+
+
