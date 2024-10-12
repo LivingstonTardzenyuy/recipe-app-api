@@ -16,5 +16,5 @@ urlpatterns = [
     
     
     path('user/', include('core.api.urls')),
-    
+    path('recipe/', include('core.api.urls')),
 ]
