@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'core',
+    'recipe',
+    
+    
     'rest_framework',
     
     # custom apps

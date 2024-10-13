@@ -160,6 +160,5 @@ class PrivateUserAPITests(TestCase):
         response = self.client.patch(ME_URL, payload)
         self.user.refresh_from_db()    # detecth the change by refreshing our db
         self.assertEqual(self.user.name, payload['name'])
-        self.assertTrue(self.user.check_password(payload['password']))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         

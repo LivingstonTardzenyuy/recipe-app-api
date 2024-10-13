@@ -5,6 +5,8 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
+from decimal import Decimal  
+from core import models
 # from .models import User
 
 
@@ -42,4 +44,5 @@ class ModelTests(TestCase):
         admin_user = User.objects.create_superuser('admin@gmail.com', 'test123')
         self.assertTrue(admin_user.is_superuser)
         self.assertTrue(admin_user.is_staff)
+        
         
