@@ -5,7 +5,7 @@ from decimal import Decimal
 from rest_framework.test import force_authenticate
 from rest_framework import status
 from django.urls import reverse
-from .models import Recipe
+from .models import Recipe, Tag
 from recipe.api.serializers import RecipeSerializer, RecipeDetailsSerializer
 # Create your tests here.
 
@@ -182,3 +182,23 @@ class PrivateRecipeAPITests(TestCase):
         response = self.client.delete(detail_url(recipe.id))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertTrue(Recipe.objects.filter(id=recipe.id).exists())
+        
+        
+        
+class TagsAPITests(TestCase):
+    def setUp(self):
+        self.userTag = get_user_model().objects.create_user(
+            email='test@example.com',
+            password='testpass123',
+        )
+    
+    def test_create_tag(self):
+        """ 
+            Test creating a tag is successful.
+        """
+        tag = Tag.objects.create(
+            user= self.userTag,
+            name="Tag1"
+        )
+        self.assertEqual(str(tag), tag.name)  # str representation of our tag.
+        

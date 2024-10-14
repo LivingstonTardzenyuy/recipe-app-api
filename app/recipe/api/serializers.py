@@ -5,7 +5,7 @@ from recipe.models import Recipe
 class RecipeSerializer(serializers.ModelSerializer):
     """ Serializers for Recipe """
     class Meta:
-        models = Recipe 
+        model = Recipe 
         fields = ["id", "title", "time_minutes", "price", "link"] 
         read_only_fields = ['id']
         
