@@ -79,3 +79,20 @@ class PrivateTagsAPiTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         # self.assertEqual(response[0]['id'], tag.id)
+        
+        
+    def test_update_tag(self):
+        """ Test updating a tag."""
+        tag = Tag.objects.create(
+            user= self.user,
+            name="Comfort food"
+        )
+        
+        payload = {
+            "name": "Healthy food"
+        }
+        url = reverse('recipe:tag-detail', args=[tag.id])
+        response = self.client.patch(url, payload)  
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        tag.refresh_from_db()
+        self.assertEqual(tag.name, payload.get("name"))

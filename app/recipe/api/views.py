@@ -48,3 +48,8 @@ class TagViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """ Create a new tag """
         serializer.save(user=self.request.user)
+        
+        
+    def perform_update(self, serializer):
+        """ Update a tag """
+        serializer.save()
