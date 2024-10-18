@@ -53,3 +53,4 @@ class TagViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         """ Update a tag """
         serializer.save()
+        
