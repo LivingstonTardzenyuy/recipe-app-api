@@ -1,5 +1,5 @@
-from .serializers import RecipeSerializer, RecipeDetailsSerializer, TagSerializer
-from recipe.models import Recipe, Tag
+from .serializers import RecipeSerializer, RecipeDetailsSerializer, TagSerializer, IngredientSerializer
+from recipe.models import Recipe, Tag, Ingredients
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import TokenAuthentication
@@ -54,3 +54,15 @@ class TagViewSet(viewsets.ModelViewSet):
         """ Update a tag """
         serializer.save()
         
+        
+class IngredientViewSet(viewsets.ModelViewSet):
+    serializer_class = IngredientSerializer
+    queryset = Ingredients.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    
+    def get_queryset(self):
+        """ Get queryset for auth user. """
+        return self.queryset.filter(user= self.request.user).order_by('-name')
+    
