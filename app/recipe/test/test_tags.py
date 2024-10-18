@@ -41,8 +41,16 @@ class PrivateTagsAPiTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = create_user()
+        self.tag1 = Tag.objects.create(user=self.user, name='Launch') 
+        self.recipe = Recipe.objects.create(
+            title='Test Recipe',
+            time_minutes=10,
+            price=5.00,
+            link='http://example.com',
+            user=self.user
+        )
+        self.recipe.tag.add(self.tag1)        
         self.client.force_authenticate(user = self.user)
-        
     
     def test_retrieve_tags(self):
         """ 
@@ -77,5 +85,36 @@ class PrivateTagsAPiTest(TestCase):
         tag = Tag.objects.create(user = self.user, name='Comfort food')
         response = self.client.get(TAGS_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data), 2)
         # self.assertEqual(response[0]['id'], tag.id)
+        
+        
+    def test_update_tag(self):
+        """ Test updating a tag."""
+        tag = Tag.objects.create(
+            user= self.user,
+            name="Comfort food"
+        )
+        
+        payload = {
+            "name": "Healthy food"
+        }
+        url = reverse('recipe:tag-detail', args=[tag.id])
+        response = self.client.patch(url, payload)  
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        tag.refresh_from_db()
+        self.assertEqual(tag.name, payload.get("name"))
+        
+        
+    def test_delete_tag(self):
+        """ Test deleting a tag """
+        tag1 = Tag.objects.create(
+            user= self.user,
+            name="Comfort food"
+        )
+        
+        url = reverse('recipe:tag-detail', args=[tag1.id])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # tag1.refresh_from_db()
+        self.assertFalse(Tag.objects.filter(id=tag1.id).exists())
