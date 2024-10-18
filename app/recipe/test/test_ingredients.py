@@ -9,6 +9,9 @@ from rest_framework import status
 
 INGREDIENTS_URL = reverse('recipe:ingredient-list')
 
+def detail_url(ingredient_id):
+    return reverse('recipe:ingredient-detail', args=[ingredient_id])
+
 def create_user(email="user@example.com", password="testpass123"):
     """ Create and return user. """
     return get_user_model().objects.create_user(email=email, password=password)
@@ -34,7 +37,7 @@ class IngredientsTest(TestCase):
             name='test Name'
         )
         
-        ingredients = Ingredient.objects.create(
+        ingredients = Ingredients.objects.create(
             user=user,
             name="ingredients"
         )
@@ -67,6 +70,17 @@ class PrivateIngredientsApiTests(TestCase):
         ingredient = Ingredients.objects.create(user= self.user, name="Pepper")
         response = self.client.get(INGREDIENTS_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response), 1)
+        self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['name'], ingredient.name)
+    
+    def test_parital_update_ingredients(self):
+        ingredients = Ingredients.objects.create(
+            user= self.user,
+            name="Ingredients"
+        )
         
+        payload = {
+            "name": "Ingredient-update-now",
+        }
+        response = self.client.patch(detail_url(ingredients.id), payload)
+        self.as
